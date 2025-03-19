@@ -106,7 +106,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         # SUCCESS CASE
-        run: 
+        run:
+          set -euxo pipefail
           gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json > results.json
           cat results.json | jq
           echo "resultsfile=results.json" >> $GITHUB_OUTPUT 
