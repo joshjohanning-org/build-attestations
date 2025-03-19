@@ -91,7 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         # SUCCESS CASE
-        run: gh attestation verify staging/build.tar.gz -R ${{ github.repository }}
+        run: gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz
         continue-on-error: true
 
       - name: Validate Attestation (fail)
@@ -100,7 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         # FAIL CASE
-        run: gh attestation verify staging/build.tar.gz -R joshjohanning-org/test1111
+        run: gh attestation verify --owner devopselvis staging/build.tar.gz
 
       - name: Output Attestation
         if: steps.validate.outcome == 'success'
