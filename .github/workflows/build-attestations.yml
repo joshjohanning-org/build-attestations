@@ -106,7 +106,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         # SUCCESS CASE
-        run: gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json | jq
+        run: 
+          gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json > results.json
+          cat results.json | jq
+          echo "resultsfile=results.json" >> $GITHUB_OUTPUT 
         continue-on-error: true
 
       - name: Validate Attestation (fail)
@@ -118,9 +121,10 @@ jobs:
         run: gh attestation verify --owner devopselvis staging/build.tar.gz --format json | jq
 
       - name: Output Attestation
-        if: steps.validate.outcome == 'success'
-        run: echo "The attestation is VERIFIED" >> $GITHUB_STEP_SUMMARY
-
-      - name: Output Attestation FAILED
-        if: steps.validate.outcome == 'failure'
-        run: echo "The attestation is NOT VERIFIED" >> $GITHUB_STEP_SUMMARY
+        if: always()
+        run: |
+          echo "## Attestation result:" >> $GITHUB_STEP_SUMMARY
+          echo "The attestation result is: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Attestation details:" >> $GITHUB_STEP_SUMMARY
+          echo $(cat results.json | jq '.[].verificationResult') >> $GITHUB_STEP_SUMMARY
