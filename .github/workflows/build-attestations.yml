@@ -84,7 +84,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sbom
-          path: ${{ steps.gensbom.outputs.fileName }}
+          # path: ${{ steps.gensbom.outputs.fileName }}
+          path: sbom.spdx.json
 
   # Lets validate the attestation
   validate:
