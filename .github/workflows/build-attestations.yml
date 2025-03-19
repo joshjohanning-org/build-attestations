@@ -58,6 +58,12 @@ jobs:
           # Specify the path to the folder you want to attest
           subject-path: staging/build.tar.gz
 
+      - name: Attest
+        uses: actions/attest-sbom@v2
+        with:
+          subject-path: '${{ github.workspace }}/my-app'
+          sbom-path: 'sbom.spdx.json'
+
       - name: Upload attestations 
         uses: actions/upload-artifact@v4
         with:
@@ -91,6 +97,7 @@ jobs:
         env:
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.PAT }}
+          GH_DEBUG: api
         # SUCCESS CASE
         run: gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz
         continue-on-error: true
@@ -100,6 +107,7 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_DEBUG: api
         # FAIL CASE
         run: gh attestation verify --owner devopselvis staging/build.tar.gz
 
