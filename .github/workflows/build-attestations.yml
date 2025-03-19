@@ -80,7 +80,7 @@ jobs:
           path: ${{ steps.gensbom.outputs.fileName }}
 
   # Lets validate the attestation
-  validate:
+  validate-build:
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -101,10 +101,10 @@ jobs:
       - name: List files in staging directory 
         run: ls -al staging/
 
-      - name: Validate Attestation (pass)
+      - name: Validate Build Attestation (pass)
         id: validate
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # SUCCESS CASE
         run: |
           gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json > results.json
@@ -112,7 +112,7 @@ jobs:
           echo "resultsfile=results.json" >> $GITHUB_OUTPUT 
         continue-on-error: true
 
-      - name: Validate Attestation (fail)
+      - name: Validate Build Attestation (fail)
         id: validate2
         continue-on-error: true
         env:
@@ -123,10 +123,55 @@ jobs:
       - name: Output Attestation
         if: always()
         run: |
-          echo "## Attestation result" >> $GITHUB_STEP_SUMMARY
+          echo "## Build attestation result" >> $GITHUB_STEP_SUMMARY
           echo "The attestation result is: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Attestation details" >> $GITHUB_STEP_SUMMARY
+          echo "## Build attestation details" >> $GITHUB_STEP_SUMMARY
           echo '```json' >> $GITHUB_STEP_SUMMARY
           cat results.json | jq '.[].verificationResult' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  validate-sbom:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Create staging directory
+        run: mkdir -p ./staging
+
+      - name: Download the artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: staging/
+
+      - name: List files in staging directory 
+        run: ls -al staging/
+
+      - name: Validate SBOM Attestation (pass)
+        id: validate
+        env:
+          GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz \
+            --predicate-type https://spdx.dev/Document/v2.3 \
+            --format json > results.json
+          cat results.json | jq
+          echo "resultsfile=results.json" >> $GITHUB_OUTPUT
+        # could have also used: gh attestation verify build.tar.gz --owner ${{ github.repository_owner }} --predicate-type https://spdx.dev/Document/v2.3 --format json --jq '.[].verificationResult.statement.predicate'
+        continue-on-error: true
+
+      - name: Output Attestation
+        if: always()
+        run: |
+          echo "## SBOM attestation result" >> $GITHUB_STEP_SUMMARY
+          echo "The attestation result is: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## SBOM attestation details" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat results.json | jq '.[].verificationResult.statement.predicate' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
