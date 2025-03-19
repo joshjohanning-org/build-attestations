@@ -52,11 +52,11 @@ jobs:
           cd staging
           tar -czf build.tar.gz ./*
 
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
-        with:
-          # Specify the path to the folder you want to attest
-          subject-path: staging/build.tar.gz
+      # - name: Attest build provenance
+      #   uses: actions/attest-build-provenance@v2
+      #   with:
+      #     # Specify the path to the folder you want to attest
+      #     subject-path: staging/build.tar.gz
 
       - uses: advanced-security/generate-sbom-action@v1
         id: gensbom
@@ -69,9 +69,15 @@ jobs:
 
       - name: Upload build artifact 
         uses: actions/upload-artifact@v4
+        id: upload
         with:
           name: build
           path: staging/
+
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: 'staging/build.tar.gz'
+          subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
