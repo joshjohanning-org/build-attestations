@@ -46,7 +46,7 @@ jobs:
           tar -czf attestations.tar.gz ./*
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v2
         with:
           # Specify the path to the folder you want to attest
           subject-path: staging/attestations.tar.gz
