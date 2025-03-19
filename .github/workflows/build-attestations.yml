@@ -76,7 +76,7 @@ jobs:
 
       - uses: actions/attest-build-provenance@v2
         with:
-          subject-name: 'staging/build.tar.gz'
+          subject-name: 'build.tar.gz'
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
 
       - name: Upload SBOM
