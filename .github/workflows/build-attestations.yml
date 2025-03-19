@@ -58,14 +58,21 @@ jobs:
           # Specify the path to the folder you want to attest
           subject-path: staging/build.tar.gz
 
-      - uses: advanced-security/generate-sbom-action@v1
-        id: gensbom
+      # - uses: advanced-security/generate-sbom-action@v1
+      #   id: gensbom
+
+      - uses: anchore/sbom-action@v0
+        with:
+          path: ./staging/
+          format: 'spdx-json'
+          output-file: 'sbom.spdx.json'
 
       - name: Attest SBOM
         uses: actions/attest-sbom@v2
         with:
           subject-path: 'staging/build.tar.gz'
-          sbom-path: '${{ steps.gensbom.outputs.fileName }}'
+          sbom-path: 'sbom.spdx.json'
+          # sbom-path: '${{ steps.gensbom.outputs.fileName }}'
 
       - name: Upload build artifact 
         uses: actions/upload-artifact@v4
