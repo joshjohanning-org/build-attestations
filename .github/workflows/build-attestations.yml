@@ -1,6 +1,13 @@
-name: Demo 14 - Build Attestations
+name: Build Attestations
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -75,7 +82,7 @@ jobs:
         with:
           name: attestations
           path: staging/
-         
+
       - name: List files in staging directory 
         run: ls -al staging/
 
