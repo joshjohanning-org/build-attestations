@@ -1,5 +1,10 @@
 # build-attestations-private
 
+Links:
+https://github.blog/news-insights/product-news/introducing-artifact-attestations-now-in-public-beta/
+https://github.blog/changelog/2025-02-18-recent-improvements-to-artifact-attestations/
+https://docs.github.com/en/enterprise-cloud@latest/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds
+
 Interactively, the command shows:
 
 ```sh
