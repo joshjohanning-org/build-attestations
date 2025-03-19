@@ -104,11 +104,9 @@ jobs:
       - name: Validate Attestation (pass)
         id: validate
         env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          GH_DEBUG: api
         # SUCCESS CASE
-        run: gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz
+        run: gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json
         continue-on-error: true
 
       - name: Validate Attestation (fail)
@@ -116,9 +114,8 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_DEBUG: api
         # FAIL CASE
-        run: gh attestation verify --owner devopselvis staging/build.tar.gz
+        run: gh attestation verify --owner devopselvis staging/build.tar.gz --format json
 
       - name: Output Attestation
         if: steps.validate.outcome == 'success'
