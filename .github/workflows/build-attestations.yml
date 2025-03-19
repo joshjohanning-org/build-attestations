@@ -127,4 +127,4 @@ jobs:
           echo "The attestation result is: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Attestation details:" >> $GITHUB_STEP_SUMMARY
-          echo $(cat results.json | jq '.[].verificationResult') >> $GITHUB_STEP_SUMMARY
+          echo $(cat results.json | jq '.[].verificationResult' | jq) >> $GITHUB_STEP_SUMMARY
