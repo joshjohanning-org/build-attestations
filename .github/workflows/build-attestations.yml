@@ -61,7 +61,7 @@ jobs:
       - uses: advanced-security/generate-sbom-action@v1
         id: gensbom
 
-      - name: Attest
+      - name: Attest SBOM
         uses: actions/attest-sbom@v2
         with:
           subject-path: 'staging/build.tar.gz'
