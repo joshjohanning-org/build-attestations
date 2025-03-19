@@ -104,7 +104,7 @@ jobs:
       - name: Validate Build Attestation (pass)
         id: validate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         # SUCCESS CASE
         run: |
           gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz --format json > results.json
@@ -116,7 +116,7 @@ jobs:
         id: validate2
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         # FAIL CASE
         run: gh attestation verify --owner devopselvis staging/build.tar.gz --format json | jq
 
@@ -155,7 +155,7 @@ jobs:
       - name: Validate SBOM Attestation (pass)
         id: validate
         env:
-          GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh attestation verify --owner ${{ github.repository_owner }} staging/build.tar.gz \
             --predicate-type https://spdx.dev/Document/v2.3 \
