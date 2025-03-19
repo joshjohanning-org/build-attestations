@@ -123,10 +123,10 @@ jobs:
       - name: Output Attestation
         if: always()
         run: |
-          echo "## Attestation result:" >> $GITHUB_STEP_SUMMARY
+          echo "## Attestation result" >> $GITHUB_STEP_SUMMARY
           echo "The attestation result is: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Attestation details:" >> $GITHUB_STEP_SUMMARY
+          echo "## Attestation details" >> $GITHUB_STEP_SUMMARY
           echo '```json' >> $GITHUB_STEP_SUMMARY
           cat results.json | jq '.[].verificationResult' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
