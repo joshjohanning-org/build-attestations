@@ -58,17 +58,26 @@ jobs:
           # Specify the path to the folder you want to attest
           subject-path: staging/build.tar.gz
 
-      # - name: Attest
-      #   uses: actions/attest-sbom@v2
-      #   with:
-      #     subject-path: '${{ github.workspace }}/my-app'
-      #     sbom-path: 'sbom.spdx.json'
+      - uses: advanced-security/generate-sbom-action@v1
+        id: gensbom
 
-      - name: Upload attestations 
+      - name: Attest
+        uses: actions/attest-sbom@v2
+        with:
+          subject-path: 'staging/build.tar.gz'
+          sbom-path: '${{ steps.gensbom.outputs.fileName }}'
+
+      - name: Upload build artifact 
         uses: actions/upload-artifact@v4
         with:
           name: build
           path: staging/
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: ${{ steps.gensbom.outputs.fileName }}
 
   # Lets validate the attestation
   validate:
