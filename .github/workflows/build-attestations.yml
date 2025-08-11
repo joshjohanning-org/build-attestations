@@ -93,7 +93,7 @@ jobs:
         run: mkdir -p ./staging
 
       - name: Download the artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build
           path: staging/
@@ -144,7 +144,7 @@ jobs:
         run: mkdir -p ./staging
 
       - name: Download the artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: build
           path: staging/
