@@ -62,7 +62,7 @@ jobs:
         id: gensbom
 
       - name: Attest SBOM
-        uses: actions/attest-sbom@v2
+        uses: actions/attest-sbom@v3
         with:
           subject-path: 'staging/build.tar.gz'
           sbom-path: '${{ steps.gensbom.outputs.fileName }}'
