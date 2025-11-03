@@ -68,13 +68,13 @@ jobs:
           sbom-path: '${{ steps.gensbom.outputs.fileName }}'
 
       - name: Upload build artifact 
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build
           path: staging/
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sbom
           path: ${{ steps.gensbom.outputs.fileName }}
