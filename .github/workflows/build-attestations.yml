@@ -20,7 +20,7 @@ jobs:
     permissions:
       # for checkout
       contents: read
-      # you must include thess permission to use the action/attest-build-provenance@v1 action
+      # you must include these permissions to use the actions/attest@v4 action
       id-token: write
       attestations: write
 
@@ -53,18 +53,20 @@ jobs:
           tar -czf build.tar.gz ./*
 
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest@v4
         with:
-          # Specify the path to the folder you want to attest
+          # Specify the path to the artifact you want to attest
+          # When only subject-path is provided, the action auto-detects provenance mode
           subject-path: staging/build.tar.gz
 
       - uses: advanced-security/generate-sbom-action@v1
         id: gensbom
 
       - name: Attest SBOM
-        uses: actions/attest-sbom@v2
+        uses: actions/attest@v4
         with:
           subject-path: 'staging/build.tar.gz'
+          # When sbom-path is provided, the action auto-detects SBOM mode
           sbom-path: '${{ steps.gensbom.outputs.fileName }}'
 
       - name: Upload build artifact 
